@@ -1,0 +1,125 @@
+version: '3.7'
+
+x-kc_dbconfig_env: &kcdbconfig_env
+  KEYCLOAK_DATABASE_NAME: &kcdbname postgres
+  KEYCLOAK_DATABASE_HOST: postgres
+  KEYCLOAK_DATABASE_USER: &kcdbuser keycloak
+  # FIXME: take from env (which should be set to random)
+  KEYCLOAK_DATABASE_PASSWORD: &kcdbpass keycloakpwd # pragma: allowlist secret
+
+x-ldap_admin_env: &ldap_admin_env
+  # FIXME: take from env (which should be set to random)
+  LDAP_ADMIN_PASSWORD: &ldapadminpass ldapadminpwd # pragma: allowlist secret
+  LDAP_ADMIN_USERNAME: &ldapadminuser admin
+
+x-keycloak_users_env: &keycloak_users_env
+  KEYCLOAK_CREATE_ADMIN_USER: true
+  KEYCLOAK_ADMIN_USER: &lcadminuser admin
+  KEYCLOAK_MANAGEMENT_USER: damager
+  # FIXME: take from env (which should be set to random)
+  KEYCLOAK_ADMIN_PASSWORD: &kcadminpass kcadminpw # pragma: allowlist secret
+  KEYCLOAK_MANAGEMENT_PASSWORD: kcmgrpw # pragma: allowlist secret
+
+x-keycloak_profile_env: &keycloak_profile_env
+  # These can be expanded in keycloak-config/profile.json
+  KCP_REALM: "RASENMAEHER"
+  KCP_MAIN_ID: "4f88fe8c-ffa5-4ae4-97c9-3831a500d502"  # FIXME: get from env or something
+
+x-keycloakinit_users_env: &keycloakinit_users_env
+  KEYCLOAK_USER: *lcadminuser # pragma: allowlist secret
+  KEYCLOAK_PASSWORD: *kcadminpass # pragma: allowlist secret
+
+services:
+  openldap:
+    image: pvarki/openldap:latest
+    build:
+      context: ./openldap
+      dockerfile: Dockerfile
+    ports:
+      - '1389:1389'
+    environment:
+      <<: *ldap_admin_env
+      LDAP_SKIP_DEFAULT_TREE: yes
+      LDAP_ALLOW_ANON_BINDING: no
+      # FIXME: get from env ??
+      LDAP_ROOT: "dc=example,dc=org"  # Probably needs to match the custom ldfis
+      LDAP_LOGLEVEL: 0
+    volumes:
+      - openldap_data:/bitnami/openldap
+    healthcheck:
+      test: 'ldapsearch -Q -tt -LLL -Y EXTERNAL -H ldapi:/// "(uid=testuser)" -b dc=example,dc=org memberOf'
+      interval: 5s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+
+  postgres:
+    image: postgres:12
+    networks:
+      - dbnet
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+      - ca_public:/ca
+    environment:
+      POSTGRES_PASSWORD: *kcdbpass # pragma: allowlist secret
+      POSTGRES_USER: *kcdbuser
+      POSTGRES_DATABASE: *kcdbname
+    healthcheck:
+      test: "pg_isready --dbname=$$POSTGRES_DB --username=$$POSTGRES_USER"
+      interval: 5s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+
+  keycloak:
+    image: bitnami/keycloak:latest
+    ports:
+      - '8080:8080'
+    environment:
+      <<: [*kcdbconfig_env, *keycloak_users_env]
+      KC_HEALTH_ENABLED: true
+    networks:
+      - kcnet
+      - dbnet
+    volumes:
+      - ca_public:/ca
+    depends_on:
+      openldap:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: "curl -s localhost:8080/health/ready | grep status | grep UP"
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 15s
+
+  # init container that sets up profile with realm on keycloak instance
+  keycloak-init:
+    image: adorsys/keycloak-config-cli:latest-21.0.1
+    networks:
+      - kcnet
+    volumes:
+      - ./keycloak-config:/config
+      - ca_public:/ca
+    environment:
+      <<: [*keycloak_profile_env, *ldap_admin_env, *keycloakinit_users_env]
+      KEYCLOAK_URL: http://keycloak:8080
+      KEYCLOAK_SSL-VERIFY: false
+      KEYCLOAK_AVAILABILITYCHECK_ENABLED: true
+      KEYCLOAK_AVAILABILITYCHECK_TIMEOUT: 30s
+      IMPORT_VAR_SUBSTITUTION_ENABLED: true
+      LDAP_CONNECTION_URL: ldap://openldap:1389
+    depends_on:
+      keycloak:
+        condition: service_healthy
+
+networks:
+  kcnet:
+  dbnet:
+
+volumes:
+  pg_data:
+  openldap_data:
+  ca_public:
