@@ -9,7 +9,7 @@ x-kc_dbconfig_env: &kcdbconfig_env
 
 x-keycloak_users_env: &keycloak_users_env
   KEYCLOAK_CREATE_ADMIN_USER: true
-  KEYCLOAK_ADMIN_USER: &lcadminuser admin
+  KEYCLOAK_ADMIN_USER: &kcadminuser admin
   KEYCLOAK_MANAGEMENT_USER: damager
   # FIXME: take from env (which should be set to random)
   KEYCLOAK_ADMIN_PASSWORD: &kcadminpass kcadminpw # pragma: allowlist secret

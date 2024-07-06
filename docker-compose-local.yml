@@ -14,7 +14,7 @@ x-ldap_admin_env: &ldap_admin_env
 
 x-keycloak_users_env: &keycloak_users_env
   KEYCLOAK_CREATE_ADMIN_USER: true
-  KEYCLOAK_ADMIN_USER: &lcadminuser admin
+  KEYCLOAK_ADMIN_USER: &kcadminuser admin
   KEYCLOAK_MANAGEMENT_USER: damager
   # FIXME: take from env (which should be set to random)
   KEYCLOAK_ADMIN_PASSWORD: &kcadminpass kcadminpw # pragma: allowlist secret
@@ -26,7 +26,7 @@ x-keycloak_profile_env: &keycloak_profile_env
   KCP_MAIN_ID: "4f88fe8c-ffa5-4ae4-97c9-3831a500d502"  # FIXME: get from env or something
 
 x-keycloakinit_users_env: &keycloakinit_users_env
-  KEYCLOAK_USER: *lcadminuser # pragma: allowlist secret
+  KEYCLOAK_USER: *kcadminuser # pragma: allowlist secret
   KEYCLOAK_PASSWORD: *kcadminpass # pragma: allowlist secret
 
 x-keycloak_tls_env: &keycloak_tls_env
