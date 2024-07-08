@@ -1848,6 +1848,23 @@
         "description": "${role_offline-access}",
         "id": "69cfe333-0df8-4cdc-8827-99aae2551c2b",
         "name": "offline_access"
+      },
+      {
+        "attributes": {},
+        "clientRole": false,
+        "composite": true,
+        "composites": {
+          "client": {
+            "realm-management": [
+              "view-users",
+              "manage-users"
+            ]
+          }
+        },
+        "containerId": "$(env:KCP_MAIN_ID)",
+        "description": "Users tagged admin in rmapi",
+        "id": "e2444a9f-680f-424b-93b0-1bd513839704",
+        "name": "admin"
       }
     ]
   },
