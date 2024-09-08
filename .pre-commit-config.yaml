@@ -43,5 +43,5 @@ repos:
     rev: v1.2.0
     hooks:
     -   id: detect-secrets
-        exclude: "poetry.lock|dotenv.example|docker-compose_.*.yml|profile.json"
+        exclude: "poetry.lock|dotenv.example|docker-compose_.*.yml|keycloak-config/.*.json"
         # args: ['--baseline', '.secrets.baseline']
