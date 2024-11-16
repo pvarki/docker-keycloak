@@ -1899,6 +1899,29 @@
             {
               "config": {
                 "always.read.value.from.ldap": [
+                  "false"
+                ],
+                "is.mandatory.in.ldap": [
+                  "false"
+                ],
+                "ldap.attribute": [
+                  "displayName"
+                ],
+                "read.only": [
+                  "false"
+                ],
+                "user.model.attribute": [
+                  "callsign"
+                ]
+              },
+              "id": "822610bf-e1fa-40f6-9d91-f79f286b9797",
+              "name": "callsign",
+              "providerId": "user-attribute-ldap-mapper",
+              "subComponents": {}
+            },
+            {
+              "config": {
+                "always.read.value.from.ldap": [
                   "true"
                 ],
                 "is.mandatory.in.ldap": [
