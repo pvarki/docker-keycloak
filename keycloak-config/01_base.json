@@ -2642,7 +2642,7 @@
               "query-groups",
               "manage-users",
               "query-users",
-              "view-users"
+              "view-users",
             ]
           }
         },
