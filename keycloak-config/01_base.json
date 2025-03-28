@@ -1920,25 +1920,21 @@
               "subComponents": {}
             },
             {
-              "id": "a4df4557-81e2-4959-b57e-5d51aaea80a5",
-              "name": "altUsernames",
-              "providerId": "user-attribute-ldap-mapper",
-              "subComponents": {},
               "config": {
-                "ldap.attribute": [
-                  "description"
+                "always.read.value.from.ldap": [
+                  "false"
                 ],
                 "attribute.force.default": [
                   "true"
                 ],
-                "is.mandatory.in.ldap": [
-                  "false"
-                ],
                 "is.binary.attribute": [
                   "false"
                 ],
-                "always.read.value.from.ldap": [
+                "is.mandatory.in.ldap": [
                   "false"
+                ],
+                "ldap.attribute": [
+                  "description"
                 ],
                 "read.only": [
                   "false"
@@ -1946,7 +1942,11 @@
                 "user.model.attribute": [
                   "altUsernames"
                 ]
-              }
+              },
+              "id": "a4df4557-81e2-4959-b57e-5d51aaea80a5",
+              "name": "altUsernames",
+              "providerId": "user-attribute-ldap-mapper",
+              "subComponents": {}
             },
             {
               "config": {
@@ -2642,7 +2642,7 @@
               "query-groups",
               "manage-users",
               "query-users",
-              "view-users",
+              "view-users"
             ]
           }
         },
