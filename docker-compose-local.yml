@@ -81,7 +81,7 @@ services:
       start_period: 5s
 
   keycloak:
-    image: bitnami/keycloak:${KEYCLOAK_VERSION:-22.0.4}
+    image: bitnamilegacy/keycloak:${KEYCLOAK_VERSION:-22.0.4}
     ports:
       - '8280:8080'  # do not expose this in production
       - '9443:8443'
