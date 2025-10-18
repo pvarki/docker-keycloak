@@ -1,7 +1,7 @@
 #!/usr/bin/env -S /bin/bash
 KCI_SERVER_KEY_FILENAME="${KCI_SERVER_KEY_FILENAME:-/le_certs/rasenmaeher/privkey.pem}"
 KCI_SERVER_CERT_FILENAME="${KCI_SERVER_CERT_FILENAME:-/le_certs/rasenmaeher/fullchain.pem}"
-DATADIR="/bitnami/keycloak"
+DATADIR="/data/persistent/keycloak"
 
 pushd $DATADIR >> /dev/null
 
