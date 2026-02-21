@@ -11,4 +11,4 @@ fi
 
 # Run the 'exec' command as the last step of the script.
 # As it replaces the current shell process, no additional shell commands will run after the 'exec' command.
-exec /opt/keycloak/bin/kc.sh start "$@"
+exec /opt/keycloak/bin/kc.sh "$@" ${KC_EXTRA_ARGS}
