@@ -12,7 +12,7 @@ RUN dnf install --installroot /mnt/rootfs  \
     dnf --installroot /mnt/rootfs clean all && \
     rpm --root /mnt/rootfs -e --nodeps setup
 
-FROM keycloak/keycloak:$KC_VERSION_TAG
+FROM keycloak/keycloak:$KC_VERSION_TAG AS production
 ENV QUARKUS_TRANSACTION_MANAGER_ENABLE_RECOVERY=true \
     KC_HEALTH_ENABLED=true
 COPY --from=ubi-micro-build /mnt/rootfs /
