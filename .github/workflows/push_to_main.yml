@@ -4,6 +4,7 @@ on:
       - main
   workflow_dispatch:
 
+# Remember to change KC_VERSION_TAG also in pull_request.yml and .bumpversion.toml
 env:
   KC_VERSION_TAG: 24.0.5
 
