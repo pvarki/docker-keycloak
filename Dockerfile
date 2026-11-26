@@ -4,6 +4,7 @@ ARG KC_VERSION_TAG=24.0.5
 FROM registry.access.redhat.com/ubi9 AS ubi-micro-build
 RUN mkdir -p /mnt/rootfs
 RUN dnf install --installroot /mnt/rootfs  \
+      java-17-openjdk-headless \
       openssl \
       gawk \
       sed \
@@ -25,6 +26,10 @@ FROM keycloak/keycloak:$KC_VERSION_TAG AS production
 ENV QUARKUS_TRANSACTION_MANAGER_ENABLE_RECOVERY=true \
     KC_HEALTH_ENABLED=true
 COPY --from=builder /opt/keycloak/ /opt/keycloak/
+# The upstream image keeps the JDK it was built with; replace it with the current UBI one
+USER root
+RUN rm -rf /usr/lib/jvm
+USER 1000
 COPY --from=ubi-micro-build /mnt/rootfs /
 COPY custom_entrypoint.sh /custom_entrypoint.sh
 ENTRYPOINT ["/custom_entrypoint.sh"]
